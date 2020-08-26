@@ -5,17 +5,18 @@
 
 <div class="col-sm-10">
    <h3  class="fas fa-whistle my-5">Home</h3>
+    {% for post in posts%}
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
-            <h1 class="display-3">Fluid jumbo heading</h1>
-            <p class="lead">Jumbo helper text</p>
+            <h2 class="text-xl-left">{{post.title}}</h2>
+            <p class="txt-sm txt-secondary">{{post.subtext}} by {{user.name}} {{post.date}}</p>
             <hr class="my-4">
-            <p>More info</p>
-            <p class="lead">
-                <a class="btn btn-primary btn-lg" href="Jumbo action link" role="button">Jumbo action name</a>
-            </p>
+            <p>{{post.desc}}</p>
+          
         </div>
     </div>
+    {% endfor %}
+
 
 </div>     
 
