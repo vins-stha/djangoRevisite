@@ -22,5 +22,5 @@ urlpatterns = [
     path('', views.create_list, name ="userHome"),
     path('delete/<int:id>/', views.delete, name ="deleteUser"),
     path('edit/<int:id>/', views.edit, name ="editUser"),
-    path('blogs/', include('blog.urls')),
+    path('blog/', include('blog.urls')),
 ]

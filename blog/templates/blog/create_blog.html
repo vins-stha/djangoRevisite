@@ -1,0 +1,57 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block content %}
+{{user.username}}
+
+<div class="container">
+    <h2 class ="text my-5">Create a post</h2>
+     
+
+    <div class = "row">
+        <div class ="column col-sm-8">
+    {% if messages %}
+        {% for message in messages %}
+            <p {% if message.tags %} class ="alert alert-{{message.tags}} mb-5" {% endif %}         
+            >{{message}} {{post }}</p>
+        {% endfor %}
+   
+    {% endif %}
+            <form method="post">
+            {% csrf_token %}
+            {% for element in form %}
+                <p> {{element.label}} {{element}}</p>
+            {% endfor %}
+            <input type="submit" value="Create" class="btn btn-default"></input>
+            <a href="{% url 'dashboard'%}"  class ="btn btn-danger">Cancel</a>
+            
+            </form>
+
+        </div> 
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+{% endblock content %}
