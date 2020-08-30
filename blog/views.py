@@ -1,14 +1,16 @@
 from django.shortcuts import render, HttpResponseRedirect, Http404
+from django.views.generic import ListView
 
 # Create your views here.
 
 from django.views.decorators.csrf import csrf_exempt
 
 from django import forms
-from .forms import Signupform,LoginForm
+from .forms import Signupform,LoginForm, PostForm
 from django.contrib import messages
 from django.contrib.auth import login,logout, authenticate
 from .models import Post
+from django.views.generic.list import ListView
 
 # Create your views here.
 def  index(request):
@@ -35,7 +37,7 @@ def user_login(request):
                 if user is not None:
                     login(request, user)
                     messages.success(request, "Login was successful")
-                    return HttpResponseRedirect('/blogs/dashboard')
+                    return HttpResponseRedirect('/blog/dashboard')
                 else:
                     messages.warning(request, "Something went wrong")
         else:
@@ -59,7 +61,39 @@ def user_signup(request):
     return render(request, 'blog/signup.html', { 'form': form })
 
 def user_logout(request):
+
    
     logout(request)
 
-    return HttpResponseRedirect('/blogs/login')
+    return HttpResponseRedirect('/blog/login')
+
+def create_post(request):
+    if request.user.is_authenticated:        
+        if request.method == 'POST':
+            form = PostForm(request.POST)
+            if form.is_valid():
+                title = form.cleaned_data['title']
+                subtext = form.cleaned_data['subtext']
+                desc = form.cleaned_data['desc']
+                author = request.user.username
+
+                post = Post(title = title, subtext = subtext, desc = desc, author = author)
+                post.save()
+                form = PostForm()             
+              
+                messages.success(request, 'Congratulations! your post has been saved')
+                    # form = PostForm()
+
+            else:
+                messages.warning(request, 'Something went wrong')
+                form = PostForm()
+        else:
+            form = PostForm() #if GET
+
+        return render(request, 'blog/create_blog.html', {'form': form})
+    else:
+        return HttpResponseRedirect('/blog/login')
+
+# class PostListView(generic.ListView):
+#     model = Post
+#     paginate_by = 10
