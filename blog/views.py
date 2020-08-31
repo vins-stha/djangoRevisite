@@ -24,7 +24,17 @@ def contact(request):
     return render(request, 'blog/contact.html')
 
 def dashboard(request):
-    return render(request, 'blog/dashboard.html')
+    if request.user.is_authenticated:
+        posts = Post.objects.all()
+        return  render(request, 'blog/dashboard.html',{'posts': posts})
+    else:
+        return HttpResponseRedirect('/blog/login')
+
+
+    # else:
+    #     return HttpResponseRedirect('blog/login/')
+    #form = PostForm()
+    #return render(request, 'blog/dashboard.html')
 
 def user_login(request):    
     if not request.user.is_authenticated:
@@ -44,7 +54,7 @@ def user_login(request):
             form = LoginForm()
         return render(request, 'blog/login.html', {'form': form})
     else:
-        return HttpResponseRedirect('/blogs/dashboard')
+        return HttpResponseRedirect('/blog/dashboard')
     # form = LoginForm()
    # return render(request, 'blog/login.html', {'form': form})
 
@@ -61,8 +71,6 @@ def user_signup(request):
     return render(request, 'blog/signup.html', { 'form': form })
 
 def user_logout(request):
-
-   
     logout(request)
 
     return HttpResponseRedirect('/blog/login')
@@ -90,10 +98,31 @@ def create_post(request):
         else:
             form = PostForm() #if GET
 
-        return render(request, 'blog/create_blog.html', {'form': form})
+        return render(request, 'blog/create_post.html', {'form': form})
     else:
         return HttpResponseRedirect('/blog/login')
 
+def edit_post(request,id):
+    if request.user.is_authenticated:
+        if request.method == "post":
+            post = Post.objects.get(pk=id)
+            form = PostForm(request.POST or None, instance = post)
+
+            if form.is_valid():
+                form.save()
+                messages.success(request,"Updated!!")
+                return render('blog/dashboard.html/')
+        else:
+            post = Post.objects.get(pk = id)
+            form = PostForm(request.POST, instance = post)
+        return  render(request, 'blog/edit_post.html',{'form' : form } )
+    else:
+        return HttpResponseRedirect('blog/login/')
+
+
+def delete_post(request, id):
+    if request.user.is_authenticated:
+        post = Post.find(id)
 # class PostListView(generic.ListView):
 #     model = Post
 #     paginate_by = 10
