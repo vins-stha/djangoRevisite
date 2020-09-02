@@ -27,23 +27,12 @@ def contact(request):
 
 def dashboard(request):
     if request.user.is_authenticated:
-
-        user = request.user.username
-        if user != 'admin':
-            posts = Post.objects.filter(author = user)
-        else:
-            posts = Post.objects.all()
+        posts = Post.objects.all()
         return  render(request, 'blog/dashboard.html',{'posts': posts})
     else:
         return HttpResponseRedirect('/blog/login')
 
-
-    # else:
-    #     return HttpResponseRedirect('blog/login/')
-    #form = PostForm()
-    #return render(request, 'blog/dashboard.html')
-
-def user_login(request):    
+def user_login(request):
     if not request.user.is_authenticated:
         if request.method == "POST":
             form = LoginForm(request = request, data = request.POST)
@@ -54,26 +43,22 @@ def user_login(request):
                 if user is not None:
                     login(request, user)
                     messages.success(request, "Login was successful")
-                    return HttpResponseRedirect('/blog/dashboard')
+                    return HttpResponseRedirect('/blog/dashboard/')
                 else:
                     messages.warning(request, "Something went wrong")
         else:
             form = LoginForm()
         return render(request, 'blog/login.html', {'form': form})
     else:
-        return HttpResponseRedirect('/blog/dashboard')
-    # form = LoginForm()
-   # return render(request, 'blog/login.html', {'form': form})
-
+        return HttpResponseRedirect('/blog/dashboard/')
 
 def user_signup(request):
     if request.method == "POST" :
         form = Signupform(request.POST)
         if form.is_valid():
             messages.success(request, "Successfuly created user ")
-            user = form.save()
-            group = Group.objects.get(name="Author")
-            user.groups.add(group)
+            form.save()
+            
     else:
         form = Signupform()
     return render(request, 'blog/signup.html', { 'form': form })
@@ -98,7 +83,6 @@ def create_post(request):
                 form = PostForm()             
               
                 messages.success(request, 'Congratulations! your post has been saved')
-                    # form = PostForm()
 
             else:
                 messages.warning(request, 'Something went wrong')
@@ -117,15 +101,14 @@ def edit_post(request,id):
             form = PostForm(request.POST or None, instance=post)
             if form.is_valid():
                 form.save()
-                return HttpResponseRedirect('/blog/dashboard/')
-
-            else:
-                post = Post.objects.get(pk=id)
-                form = PostForm(instance=post)
-
-        return render(request, 'blog/edit_post.html', {'form': form})
+                messages.success(request,"Updated!!")
+                return render('blog/dashboard.html/')
+        else:
+            post = Post.objects.get(pk = id)
+            form = PostForm(request.POST, instance = post)
+        return  render(request, 'blog/edit_post.html',{'form' : form } )
     else:
-        return HttpResponseRedirect('/blog/login/')
+        return HttpResponseRedirect('blog/login/')
 
 
 def delete_post(request, id):
