@@ -30,13 +30,7 @@ def dashboard(request):
     else:
         return HttpResponseRedirect('/blog/login')
 
-
-    # else:
-    #     return HttpResponseRedirect('blog/login/')
-    #form = PostForm()
-    #return render(request, 'blog/dashboard.html')
-
-def user_login(request):    
+def user_login(request):
     if not request.user.is_authenticated:
         if request.method == "POST":
             form = LoginForm(request = request, data = request.POST)
@@ -47,17 +41,14 @@ def user_login(request):
                 if user is not None:
                     login(request, user)
                     messages.success(request, "Login was successful")
-                    return HttpResponseRedirect('/blog/dashboard')
+                    return HttpResponseRedirect('/blog/dashboard/')
                 else:
                     messages.warning(request, "Something went wrong")
         else:
             form = LoginForm()
         return render(request, 'blog/login.html', {'form': form})
     else:
-        return HttpResponseRedirect('/blog/dashboard')
-    # form = LoginForm()
-   # return render(request, 'blog/login.html', {'form': form})
-
+        return HttpResponseRedirect('/blog/dashboard/')
 
 def user_signup(request):
     if request.method == "POST" :
@@ -65,7 +56,6 @@ def user_signup(request):
         if form.is_valid():
             messages.success(request, "Successfuly created user ")
             form.save()
-            
     else:
         form = Signupform()
     return render(request, 'blog/signup.html', { 'form': form })
@@ -90,7 +80,6 @@ def create_post(request):
                 form = PostForm()             
               
                 messages.success(request, 'Congratulations! your post has been saved')
-                    # form = PostForm()
 
             else:
                 messages.warning(request, 'Something went wrong')
