@@ -27,8 +27,13 @@ def contact(request):
 
 def dashboard(request):
     if request.user.is_authenticated:
-        posts = Post.objects.all()
-        return  render(request, 'blog/dashboard.html',{'posts': posts})
+        user = request.user.username
+        if user == 'admin':
+            posts = Post.objects.all()
+        else:
+            posts = Post.objects.filter(author=user)
+
+        return render(request, 'blog/dashboard.html',{'posts': posts, 'user': user})
     else:
         return HttpResponseRedirect('/blog/login')
 
