@@ -13,7 +13,7 @@ urlpatterns = [
     path('logout/', views.user_logout, name="userLogout"),
 
     path('addBlog/', views.create_post, name = "addBlog"),
-    path('editBlog/<id>', views.edit_post, name = "editPost"),
-    path('delete/<id>', views.delete_post, name = "deletePost")
+    path('editBlog/<int:id>', views.edit_post, name = "editPost"),
+    path('delete/<int:id>', views.delete_post, name = "deletePost")
 ]
 
