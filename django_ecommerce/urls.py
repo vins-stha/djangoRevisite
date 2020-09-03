@@ -15,12 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rooms import views
+from blog import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.create_list, name ="userHome"),
-    path('delete/<int:id>/', views.delete, name ="deleteUser"),
-    path('edit/<int:id>/', views.edit, name ="editUser"),
+    path('', views.index, name="home"),
     path('blog/', include('blog.urls')),
+
 ]
