@@ -16,7 +16,7 @@ from pprint import  pprint
 
 # Create your views here.
 def  index(request):
-    posts = Post.objects.all()
+    posts = Post.objects.all().order_by('-date')
     return render(request,'blog/index.html', {'posts':posts})
 
 def about(request):
@@ -28,10 +28,11 @@ def contact(request):
 def dashboard(request):
     if request.user.is_authenticated:
         user = request.user.username
+
         if user == 'admin':
-            posts = Post.objects.all()
+            posts = Post.objects.all().order_by('-date')
         else:
-            posts = Post.objects.filter(author=user)
+            posts = Post.objects.filter(author=user).order_by('-date')
 
         return render(request, 'blog/dashboard.html',{'posts': posts, 'user': user})
     else:
@@ -102,16 +103,17 @@ def create_post(request):
 def edit_post(request,id):
     if request.user.is_authenticated:
         if request.method == 'POST':
-            post = Post.objects.get(pk=id)
-            form = PostForm(request.POST or None, instance=post)
+            user = Post.objects.get(pk=id)
+            form = PostForm(request.POST or None, instance=user)
             if form.is_valid():
                 form.save()
-                messages.success(request,"Updated!!")
-                return render('blog/dashboard.html/')
-        else:
-            post = Post.objects.get(pk = id)
-            form = PostForm(request.POST, instance = post)
-        return  render(request, 'blog/edit_post.html',{'form' : form } )
+
+                return HttpResponseRedirect('/blog/dashboard/')
+            else:
+                user = Post.objects.get(pk=id)
+                form = PostForm(instance=user)
+
+        return render(request, 'blog/edit_post.html', {'form': form})
     else:
         return HttpResponseRedirect('blog/login/')
 

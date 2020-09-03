@@ -13,3 +13,5 @@ class Post(models.Model):
 def __str__(self):
     """String for representing the Model object."""
     return self.name
+def __get_latest_by(date):
+    return Post.objects.latest(date)
